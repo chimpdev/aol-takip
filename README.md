@@ -51,7 +51,7 @@ AOL Takip is a simple Node.js application that periodically checks for new annou
    ```
 
 > [!NOTE]
-> - If you plan to use this application in a Linux environment, you may need to install additional dependencies for Puppeteer to work. You can find more information on the [official Puppeteer documentation](https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
+> If you plan to use this application in a Linux environment, you may need to install additional dependencies for Puppeteer to work. You can find more information on the [official Puppeteer documentation](https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
 
 #### How It Works
 
