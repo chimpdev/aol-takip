@@ -6,7 +6,9 @@ import puppeteer from 'puppeteer';
 import enquirer from 'enquirer';
 import { EmbedBuilder, Colors, WebhookClient } from 'discord.js';
 
-const BASE_URL = 'https://aol.meb.gov.tr/www/onemli-duyuru/icerik/';
+const categories = ['onemli-duyuru', 'ogrencilerimizin-dikkatine']
+
+const BASE_URL = 'https://aol.meb.gov.tr/www/:category/icerik/';
 const TIME_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
 
 const database = new QuickDB({ filePath: 'data.sqlite' });
@@ -39,12 +41,14 @@ interface Announcement {
   image?: string;
 }
 
-async function fetchAnnouncement(id: number): Promise<Announcement> {
+type Categories = 'onemli-duyuru' | 'ogrencilerimizin-dikkatine';
+
+async function fetchAnnouncement(id: number, category: Categories): Promise<Announcement> {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
-    const response = await page.goto(`${BASE_URL}${id}`, { timeout: 10000 });
+    const response = await page.goto(`${BASE_URL.replace(':category', category)}${id}`, { timeout: 10000 });
     const status = response?.status() || 500; // Default to 500 if no response
 
     if (status !== 200) return { status };
@@ -87,7 +91,10 @@ async function main(): Promise<void> {
     minute: '2-digit',
   });
 
-  const result = await fetchAnnouncement(currentId + 1);
+  let result = await fetchAnnouncement(currentId + 1, 'onemli-duyuru');
+  
+  // If the announcement is not found in the first category, try the second one
+  if (result.status !== 200 || !result.date || !result.time || !result.image) result = await fetchAnnouncement(currentId + 1, 'ogrencilerimizin-dikkatine');
 
   if (result.status === 200 && result.date && result.time && result.image) {
     console.log(`Yeni duyuru bulundu! 6 saat saat sonra tekrar kontrol edilecek. (${readableFutureDate})`);
