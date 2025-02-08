@@ -9,6 +9,7 @@ AOL Takip is a simple Node.js application that periodically checks for new annou
 - Sends notifications to a Discord channel using a webhook.
 - Stores the last checked announcement ID in a local SQLite database.
 - Includes the announcement's views, date, and time in the Discord message.
+- Supports Bark app for iOS notifications.
 
 #### Requirements
 
@@ -36,6 +37,8 @@ AOL Takip is a simple Node.js application that periodically checks for new annou
 
    ```env
    WEBHOOK_URL=your-discord-webhook-url
+   BARK_SERVER_URL=your-bark-server-url
+   BARK_DEVICE_KEY=your-bark-device-key
    ```
 
 4. Build the project:
@@ -51,7 +54,7 @@ AOL Takip is a simple Node.js application that periodically checks for new annou
    ```
 
 > [!NOTE]
-> If you plan to use this application in a Linux environment, you may need to install additional dependencies for Puppeteer to work. You can find more information on the [official Puppeteer documentation](https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
+> - If you plan to use this application in a Linux environment, you may need to install additional dependencies for Puppeteer to work. You can find more information on the [official Puppeteer documentation](https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
 
 #### How It Works
 
@@ -72,6 +75,7 @@ AOL Takip is a simple Node.js application that periodically checks for new annou
 - `puppeteer`: For scraping the MEB website for announcements.
 - `quick.db`: For simple SQLite database management.
 - `enquirer`: For prompting user input.
+- `@thiskyhan/bark.js`: For sending notifications to the Bark app.
 
 #### License
 
