@@ -6,8 +6,6 @@ import puppeteer from 'puppeteer';
 import enquirer from 'enquirer';
 import { EmbedBuilder, Colors, WebhookClient } from 'discord.js';
 
-const categories = ['onemli-duyuru', 'ogrencilerimizin-dikkatine']
-
 const BASE_URL = 'https://aol.meb.gov.tr/www/:category/icerik/';
 const TIME_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
 
