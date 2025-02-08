@@ -90,7 +90,8 @@ async function main(): Promise<void> {
   if (result.status === 200 && result.date && result.time && result.image) {
     console.log(`Yeni duyuru bulundu! 6 saat saat sonra tekrar kontrol edilecek. (${readableFutureDate})`);
 
-    pushBarkMessage(`Yeni duyuru bulundu!\n${result.title}`, String(currentId + 1));
+    pushBarkMessage(`Yeni duyuru bulundu!\n${result.title}`, String(currentId + 1))
+      .catch(console.error);
 
     const [day, month, year] = result.date.split('.').map(Number);
     const [hour, minute] = result.time.split(':').map(Number);
