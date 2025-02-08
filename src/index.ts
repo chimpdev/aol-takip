@@ -5,6 +5,8 @@ import { QuickDB } from 'quick.db';
 import puppeteer from 'puppeteer';
 import enquirer from 'enquirer';
 import { EmbedBuilder, Colors, WebhookClient } from 'discord.js';
+import type { Categories, Announcement } from './types';
+import pushBarkMessage from './pushBarkMessage.js';
 
 const BASE_URL = 'https://aol.meb.gov.tr/www/:category/icerik/';
 const TIME_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
@@ -29,18 +31,6 @@ async function initializeDatabase(): Promise<number> {
 
   return currentId;
 }
-
-interface Announcement {
-  status: number;
-  url: string;
-  title?: string;
-  viewsCount?: number;
-  time?: string;
-  date?: string;
-  image?: string;
-}
-
-type Categories = 'onemli-duyuru' | 'ogrencilerimizin-dikkatine';
 
 async function fetchAnnouncement(id: number, category: Categories): Promise<Announcement> {
   const browser = await puppeteer.launch({ headless: true });
@@ -99,6 +89,8 @@ async function main(): Promise<void> {
 
   if (result.status === 200 && result.date && result.time && result.image) {
     console.log(`Yeni duyuru bulundu! 6 saat saat sonra tekrar kontrol edilecek. (${readableFutureDate})`);
+
+    pushBarkMessage(`Yeni duyuru bulundu!\n${result.title}`, String(currentId + 1));
 
     const [day, month, year] = result.date.split('.').map(Number);
     const [hour, minute] = result.time.split(':').map(Number);
