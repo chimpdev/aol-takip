@@ -34,6 +34,7 @@ async function initializeDatabase(): Promise<number> {
 
 interface Announcement {
   status: number;
+  url: string;
   title?: string;
   viewsCount?: number;
   time?: string;
@@ -47,11 +48,13 @@ async function fetchAnnouncement(id: number, category: Categories): Promise<Anno
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
+  const url = BASE_URL.replace(':category', category) + id;
+
   try {
-    const response = await page.goto(`${BASE_URL.replace(':category', category)}${id}`, { timeout: 10000 });
+    const response = await page.goto(url, { timeout: 10000 });
     const status = response?.status() || 500; // Default to 500 if no response
 
-    if (status !== 200) return { status };
+    if (status !== 200) return { status, url };
 
     const data = await page.evaluate(() => {
       const container = document.querySelector('.date');
@@ -66,7 +69,7 @@ async function fetchAnnouncement(id: number, category: Categories): Promise<Anno
       };
     });
 
-    return data ? { status, ...data } : { status };
+    return data ? { status, url, ...data } : { status, url };
   } finally {
     await browser.close();
   }
@@ -106,7 +109,7 @@ async function main(): Promise<void> {
     const embeds = [
       new EmbedBuilder()
         .setTitle(`Yeni Duyuru | ${result.title}`)
-        .setURL(`${BASE_URL}${currentId + 1}`)
+        .setURL(result.url)
         .setImage(`https://aol.meb.gov.tr${result.image}`)
         .addFields([
           { name: 'Views', value: String(result.viewsCount), inline: true },
