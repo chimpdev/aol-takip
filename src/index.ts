@@ -33,7 +33,10 @@ async function initializeDatabase(): Promise<number> {
 }
 
 async function fetchAnnouncement(id: number, category: Categories): Promise<Announcement> {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  });
   const page = await browser.newPage();
 
   const url = BASE_URL.replace(':category', category) + id;
